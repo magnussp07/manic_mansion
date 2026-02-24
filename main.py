@@ -48,7 +48,7 @@ while running:
 
     for s in spokelser:
         s.oppdater()
-        #s.tegn()
+        s.tegn(vindu)
     
     spiller.tegn(vindu)
         
