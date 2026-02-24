@@ -10,9 +10,8 @@ clock = pg.time.Clock()
 
 running = True
 
-s1 = Spokelse(200, 300)
-s2 = Spokelse(400, 100)
-spokelser = [s1,s2]
+
+spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
 
 while running:
     
@@ -21,7 +20,7 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-            
+
     for s in spokelser:
         s.oppdater()
         s.tegn()
