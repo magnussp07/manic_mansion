@@ -3,6 +3,7 @@ import pygame as pg
 from constants import *
 from klasser import *
 from spiller import Spiller
+from sau import Sau
 
 
 pg.init()
@@ -13,6 +14,7 @@ running = True
 
 
 spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
+sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
 spiller = Spiller(50, int(VINDU_HOYDE/2))
 
 while running:
@@ -49,6 +51,10 @@ while running:
     for s in spokelser:
         s.oppdater()
         s.tegn(vindu)
+    
+    for a in sauer:
+        a.oppdater(spiller)
+        a.tegn(vindu)
     
     spiller.tegn(vindu)
         

@@ -32,7 +32,7 @@ class Spiller(SpillObjekt):
         if self.venstre:
             self.rect.x -= self.fart
             
-        
+    
 
     def tegn(self, vindu:pg.Surface):
         vindu.blit(self.image, self.rect)
