@@ -14,4 +14,3 @@ class Hindring(SpillObjekt):
 
 class Sau(SpillObjekt):
     pass
-
