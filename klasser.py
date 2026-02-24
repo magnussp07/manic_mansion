@@ -1,6 +1,4 @@
-
-FRIVENSTRE = 200
-FRIHOYRE = 700
+from constants import *
 
 class SpillObjekt:
     def __init__(self, x:int, y:int):
@@ -15,16 +13,13 @@ class Spokelse(SpillObjekt):
 
     def oppdater(self):
         self.x += self.vx
-            self.y += self.vy
-            if self.x > FRIHOYRE:
-                self.vx *= -1 # Snu farten (x-retning)
-            if self.x < FRIVENSTRE:
-                self.vx *= -1 # Snu farten (x-retning)        
-            if self.y > VINDUH:
-                self.vy *= -1 # Snu farten (y-retning)
-                self.y = hoyde - self.radius # Tving den ut fra kanten
-            if self.y < self.radius:
-                self.vy *= -1 # Snu farten (y-retning)  
+        self.y += self.vy
+
+        #Sjekk kollisjon med frisoner
+        if self.x > GRENSE_H or self.x < GRENSE_V:
+            self.vx *= -1        
+        if self.y > VINDU_HOYDE or self.y < 0:
+            self.y *= -1
         
 
 class Spiller(SpillObjekt):
