@@ -24,6 +24,8 @@ class Spillbrett:
 
         for a in self.sauer:
             a.oppdater(self.spiller)
+            if a.sjekkPos() == True:
+                self.sauer.remove(a)
     
     def tegn(self, vindu):
         vindu.fill(WHITE)
@@ -186,6 +188,10 @@ class Sau(SpillObjekt):
 
         self.rect.x = x
         self.rect.y = y
+    
+    def sjekkPos(self):
+        if self.rect.centerx < GRENSE_V:
+            return True
 
     
     def oppdater(self, spiller:Spiller):
