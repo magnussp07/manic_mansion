@@ -7,33 +7,46 @@ from random import randint
 class Spillbrett:
     def __init__(self) -> None:
         self.running = True
-
+        
+        # Må legge inn tilfeldige posisjoner som ikke overlapper 
         self.spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
         self.sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
         self.hindringer = [Hindring(180, 150), Hindring(580, 280), Hindring(420, 400)]
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
 
-    def oppdater(self):
-        if self.spiller.status:
-            pass
-        self.spiller.oppdater()
-        self.spiller.sjekkKollisjonSauer(self.sauer)
 
+    def oppdater(self):
+        self.spiller.oppdater()
+        
+        # Sjekker om spillet er ferdig
+        if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
+            self.running = False
+
+        # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
+        if self.spiller.status == False:
+            self.spiller.sjekkKollisjonSauer(self.sauer)
+        
+        # Oppdaterer spøkelser
         for s in self.spokelser:
             s.oppdater()
 
+        # Oppdaterer sau, sjekker om hentet sau har kommet over til målområde
         for a in self.sauer:
             a.oppdater(self.spiller)
             if a.sjekkPos() == True:
                 self.sauer.remove(a)
+                self.spiller.poeng +=1
+                self.sauer.append(Sau(800, 50))
     
     def tegn(self, vindu):
+
+        # Tegner bakgrunn
         vindu.fill(WHITE)
         pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(0, 0, GRENSE_V, VINDU_HOYDE))
         pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(VINDU_BREDDE-GRENSE_V, 0, GRENSE_V, VINDU_HOYDE))
-        self.spiller.tegn(vindu)
-
         
+        # Tegner spiller, sauer, spøkelse og hindringer
+        self.spiller.tegn(vindu)
 
         for a in self.sauer:
             a.tegn(vindu)
@@ -78,14 +91,15 @@ class SpillObjekt:
         self.y = y
 
 
-def tilfeldigFartSpøkelse():
-    return randint(1,4)
 
 class Spokelse(SpillObjekt):
+    def tilfeldigFartSpøkelse(self):
+        return randint(1,4)
+    
     def __init__(self, x:int, y: int) -> None:
         super().__init__(x, y)
-        self.vx = tilfeldigFartSpøkelse()       #evt dele på 2, eller bare sette lik fast tall
-        self.vy = tilfeldigFartSpøkelse() 
+        self.vx = self.tilfeldigFartSpøkelse()       #evt dele på 2, eller bare sette lik fast tall
+        self.vy = self.tilfeldigFartSpøkelse() 
 
         bildesti = Path(__file__).parent / "bilder" / "spokelse.png"
         self.image = pg.image.load(bildesti).convert_alpha()
@@ -96,7 +110,6 @@ class Spokelse(SpillObjekt):
         self.rect.y = y
 
     
-
     def oppdater(self):
         self.rect.x += self.vx
         self.rect.y += self.vy
@@ -111,6 +124,7 @@ class Spokelse(SpillObjekt):
         vindu.blit(self.image, self.rect)
         
 
+
 class Spiller(SpillObjekt):
     def __init__(self, x:int, y:int):
         super().__init__(x, y)
@@ -118,6 +132,7 @@ class Spiller(SpillObjekt):
         self.y = y
         self.fart = 6
         self.status = False
+        self.poeng = 0
 
 
         bildesti = Path(__file__).parent / "bilder" / "spiller.png"
@@ -134,8 +149,17 @@ class Spiller(SpillObjekt):
     def sjekkKollisjonSauer(self, sauer):
         for sau in sauer:
           if self.rect.colliderect(sau.rect):
-            sau.hentet = True
-            self.status = True
+            if self.status == False:
+                sau.hentet = True
+                self.status = True
+            else: 
+                return True
+            
+    
+    def sjekkKollisjonSpokelse(self, spokelser):
+        for spokelse in spokelser:
+          if self.rect.colliderect(spokelse.rect):
+              return True
 
     def oppdater(self):
         if self.status == True:
@@ -153,11 +177,11 @@ class Spiller(SpillObjekt):
         if self.venstre:
             self.rect.x -= self.fart
         
-            
-    
 
     def tegn(self, vindu:pg.Surface):
         vindu.blit(self.image, self.rect)
+
+
 
 class Hindring(SpillObjekt):
     def __init__(self, x:int, y:int):
@@ -165,7 +189,7 @@ class Hindring(SpillObjekt):
 
         bildesti = Path(__file__).parent / "bilder" / "gravstein.png"
         self.image = pg.image.load(bildesti).convert_alpha()
-        self.image = pg.transform.smoothscale(self.image, (70, 70))
+        self.image = pg.transform.smoothscale(self.image, (90, 90))
         
         self.rect = self.image.get_rect()
 
@@ -174,6 +198,8 @@ class Hindring(SpillObjekt):
     
     def tegn(self, vindu:pg.Surface):
         vindu.blit(self.image, self.rect)
+
+
 
 class Sau(SpillObjekt):
     def __init__(self, x:int, y:int):
@@ -196,8 +222,9 @@ class Sau(SpillObjekt):
     
     def oppdater(self, spiller:Spiller):
         if self.hentet == True:
-            self.rect.bottomleft = spiller.rect.bottomright
             self.image = pg.transform.smoothscale(self.image, (40, 55))
+            self.rect.centery = spiller.rect.bottom
+            self.rect.left = spiller.rect.right + 10
         else:
             self.rect.x = self.x
             self.rect.y = self.y
