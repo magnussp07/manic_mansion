@@ -1,6 +1,7 @@
 from constants import *
 import pygame as pg
 from pathlib import Path
+from random import randint
 
 
 class Spillbrett:
@@ -63,11 +64,15 @@ class SpillObjekt:
         self.x = x
         self.y = y
 
+
+def tilfeldigFartSpøkelse():
+    return randint(1,4)
+
 class Spokelse(SpillObjekt):
     def __init__(self, x:int, y: int) -> None:
         super().__init__(x, y)
-        self.vx = 2              # evt sende med tilfeldig fart x- og y-retning 
-        self.vy = 2
+        self.vx = tilfeldigFartSpøkelse()       #evt dele på 2, eller bare sette lik fast tall
+        self.vy = tilfeldigFartSpøkelse() 
 
         bildesti = Path(__file__).parent / "bilder" / "spokelse.png"
         self.image = pg.image.load(bildesti).convert_alpha()
