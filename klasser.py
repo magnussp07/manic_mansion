@@ -2,6 +2,62 @@ from constants import *
 import pygame as pg
 from pathlib import Path
 
+
+class Spillbrett:
+    def __init__(self) -> None:
+        self.running = True
+
+        self.spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
+        self.sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
+        self.spiller = Spiller(50, int(VINDU_HOYDE/2))
+
+    def oppdater(self):
+        self.spiller.oppdater()
+
+        for s in self.spokelser:
+            s.oppdater()
+
+        for a in self.sauer:
+            a.oppdater(self.spiller)
+    
+    def tegn(self, vindu):
+        vindu.fill(WHITE)
+        self.spiller.tegn(vindu)
+
+        for s in self.spokelser:
+            s.tegn(vindu)
+
+        for a in self.sauer:
+            a.tegn(vindu)
+
+    def events(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_w:
+                    self.spiller.opp = True
+                if event.key == pg.K_s:
+                    self.spiller.ned = True
+                if event.key == pg.K_a:
+                    self.spiller.venstre = True
+                if event.key == pg.K_d:
+                    self.spiller.hoyre = True
+                    
+            if event.type == pg.KEYUP:
+                if event.key == pg.K_w:
+                    self.spiller.opp = False
+                if event.key == pg.K_s:
+                    self.spiller.ned = False
+                if event.key == pg.K_a:
+                    self.spiller.venstre = False
+                if event.key == pg.K_d:
+                    self.spiller.hoyre = False
+                    
+
+
+
+
 class SpillObjekt:
     def __init__(self, x:int, y:int):
         self.x = x
@@ -21,6 +77,8 @@ class Spokelse(SpillObjekt):
         self.rect.x = x
         self.rect.y = y
 
+    
+
     def oppdater(self):
         self.rect.x += self.vx
         self.rect.y += self.vy
@@ -36,10 +94,64 @@ class Spokelse(SpillObjekt):
         
 
 class Spiller(SpillObjekt):
-    pass
+    def __init__(self, x:int, y:int):
+        super().__init__(x, y)
+        self.x = x
+        self.y = y
+        self.fart = 6
+
+
+        bildesti = Path(__file__).parent / "bilder" / "spiller.png"
+        self.image = pg.image.load(bildesti).convert_alpha()
+        self.image = pg.transform.smoothscale(self.image, (80, 120))
+        
+        self.rect = self.image.get_rect()
+        
+        self.opp = False
+        self.ned = False
+        self.venstre = False
+        self.hoyre = False
+
+    def oppdater(self):
+        if self.opp:
+            self.rect.y -= self.fart
+        if self.ned:
+            self.rect.y += self.fart
+        if self.hoyre:
+            self.rect.x += self.fart
+            
+        if self.venstre:
+            self.rect.x -= self.fart
+            
+    
+
+    def tegn(self, vindu:pg.Surface):
+        vindu.blit(self.image, self.rect)
 
 class Hindring(SpillObjekt):
     pass
 
 class Sau(SpillObjekt):
-    pass
+    def __init__(self, x:int, y:int):
+        super().__init__(x, y)
+
+        bildesti = Path(__file__).parent / "bilder" / "sau.png"
+        self.image = pg.image.load(bildesti).convert_alpha()
+        self.image = pg.transform.smoothscale(self.image, (80, 120))
+        
+        self.rect = self.image.get_rect()
+
+        self.rect.x = x
+        self.rect.y = y
+
+        self.hentet = False
+    
+    def oppdater(self, spiller:Spiller):
+        if self.hentet == True:
+            self.rect.bottomleft = spiller.rect.bottomright
+        else:
+            self.rect.x = self.x
+            self.rect.y = self.y
+        
+    def tegn(self, vindu:pg.Surface):
+        vindu.blit(self.image, self.rect)
