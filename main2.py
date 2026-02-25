@@ -1,6 +1,6 @@
 import pygame as pg
 from constants import *
-from klasser import *
+from klasser2 import *
 
 pg.init()
 vindu = pg.display.set_mode([VINDU_BREDDE, VINDU_HOYDE])
