@@ -19,8 +19,8 @@ class Spillbrett:
         self.spiller.oppdater()
         
         # Sjekker om spillet er ferdig
-        if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
-            self.running = False
+       # if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
+        #    self.running = False
 
         # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
         if self.spiller.status == False:
@@ -36,6 +36,7 @@ class Spillbrett:
             if a.sjekkPos() == True:
                 self.sauer.remove(a)
                 self.spiller.poeng +=1
+                self.spiller.status = False
                 self.sauer.append(Sau(800, 50))
     
     def tegn(self, vindu):
@@ -166,6 +167,8 @@ class Spiller(SpillObjekt):
             self.fart = 3
             if self.rect.right < GRENSE_V:
                 self.status = False
+        else: 
+            self.fart = 5
 
         if self.opp:
             self.rect.y -= self.fart
