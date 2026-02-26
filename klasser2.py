@@ -9,7 +9,7 @@ class Spillbrett:
         self.running = True
         
         # Må legge inn tilfeldige posisjoner som ikke overlapper 
-        self.spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
+        self.spokelser = [Spokelse(randint(100, 700), randint(50, 350)), Spokelse(randint(100, 700), randint(50, 350))]
         self.sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
         self.hindringer = [Hindring(180, 150), Hindring(580, 280), Hindring(420, 400)]
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
@@ -63,23 +63,23 @@ class Spillbrett:
             if event.type == pg.QUIT:
                 self.running = False
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_w:
+                if event.key == pg.K_w or event.key == pg.K_UP:
                     self.spiller.opp = True
-                if event.key == pg.K_s:
+                if event.key == pg.K_s or event.key == pg.K_DOWN:
                     self.spiller.ned = True
-                if event.key == pg.K_a:
+                if event.key == pg.K_a or event.key == pg.K_LEFT:
                     self.spiller.venstre = True
-                if event.key == pg.K_d:
+                if event.key == pg.K_d or event.key == pg.K_RIGHT:
                     self.spiller.hoyre = True
                     
             if event.type == pg.KEYUP:
-                if event.key == pg.K_w:
+                if event.key == pg.K_w or event.key == pg.K_UP:
                     self.spiller.opp = False
-                if event.key == pg.K_s:
+                if event.key == pg.K_s or event.key == pg.K_DOWN:
                     self.spiller.ned = False
-                if event.key == pg.K_a:
+                if event.key == pg.K_a or event.key == pg.K_LEFT:
                     self.spiller.venstre = False
-                if event.key == pg.K_d:
+                if event.key == pg.K_d or event.key == pg.K_RIGHT:
                     self.spiller.hoyre = False
                     
 
