@@ -94,13 +94,10 @@ class SpillObjekt:
 
 
 class Spokelse(SpillObjekt):
-    def tilfeldigFartSpøkelse(self):
-        return randint(1,4)
-    
     def __init__(self, x:int, y: int) -> None:
         super().__init__(x, y)
-        self.vx = self.tilfeldigFartSpøkelse()       #evt dele på 2, eller bare sette lik fast tall
-        self.vy = self.tilfeldigFartSpøkelse() 
+        self.vx = randint(1,4)      
+        self.vy = randint(1,4) 
 
         bildesti = Path(__file__).parent / "bilder" / "spokelse.png"
         self.image = pg.image.load(bildesti).convert_alpha()
