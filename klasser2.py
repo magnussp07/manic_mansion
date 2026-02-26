@@ -170,14 +170,14 @@ class Spiller(SpillObjekt):
         else: 
             self.fart = 5
 
-        if self.opp:
+        if self.opp and self.rect.top > 0:
             self.rect.y -= self.fart
-        if self.ned:
+        if self.ned and self.rect.bottom < VINDU_HOYDE:
             self.rect.y += self.fart
-        if self.hoyre:
+        if self.hoyre and self.rect.right <= VINDU_BREDDE:
             self.rect.x += self.fart
             
-        if self.venstre:
+        if self.venstre and self.rect.left >= 0:
             self.rect.x -= self.fart
         
 
