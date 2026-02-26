@@ -9,7 +9,7 @@ class Spillbrett:
         self.running = True
         
         # Må legge inn tilfeldige posisjoner som ikke overlapper 
-        self.spokelser = [Spokelse(randint(100, 700), randint(50, 350)), Spokelse(randint(100, 700), randint(50, 350))]
+        self.spokelser = [Spokelse(randint(GRENSE_V, GRENSE_H), randint(50, VINDU_HOYDE)), Spokelse(randint(GRENSE_V, GRENSE_H), randint(50, VINDU_HOYDE))]
         self.sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
         self.hindringer = [Hindring(180, 150), Hindring(580, 280), Hindring(420, 400)]
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
