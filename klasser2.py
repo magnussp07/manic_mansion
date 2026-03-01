@@ -26,7 +26,7 @@ class Spillbrett:
             while len(posisjoner) < antall:
                 nyx = randint(min_x, max_x - bredde)
                 nyy = randint(min_y, max_y - hoyde)
-                
+
                 ok = True
 
                 for (x, y) in posisjoner:
