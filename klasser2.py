@@ -50,7 +50,7 @@ class Spillbrett:
         return self.sauer, self.hindringer, self.spokelser
     
     def nyttSpokelse(self):
-        return Spokelse(randint(GRENSE_V, GRENSE_H), randint(0, VINDU_HOYDE))
+        return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE))
         
 
     def oppdater(self):
