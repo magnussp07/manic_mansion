@@ -9,10 +9,12 @@ import math as math
 class Spillbrett:
     def __init__(self) -> None:
         self.running = True
+        self.levende = True
         
         # Må legge inn tilfeldige posisjoner som ikke overlapper 
         self.genererKordinater()
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
+        self.knapp = Knapp(VINDU_BREDDE/2 - 70, VINDU_HOYDE/2 + 100, "Restart")
 
     def sjekkAvstand(self, x1:int, y1:int, x2:int, y2:int):
         return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
@@ -51,50 +53,60 @@ class Spillbrett:
     
     def nyttSpokelse(self):
         return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE))
-        
+    
+    def restart(self): #FORSKJELL
+        """Restarter spillet"""
+        self.levende = True
+        self.spokelser = [Spokelse(200, 300), Spokelse(400, 100)]
+        self.sauer = [Sau(800, 50), Sau(800, 200), Sau(800, 350)]
+        self.hindringer = [Hindring(180, 150), Hindring(580, 280), Hindring(420, 400)]
+        self.spiller = Spiller(50, int(VINDU_HOYDE/2))
 
     def oppdater(self):
-        self.spiller.oppdater()
-        
-        # Sjekker om spillet er ferdig
-       # if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
-        #    self.running = False
+        if self.levende:
+            self.spiller.oppdater()
+            
+            # Sjekker om spillet er ferdig
+            if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
+                self.levende = False
 
-        # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
-        if self.spiller.status == False:
-            self.spiller.sjekkKollisjonSauer(self.sauer)
-        
-        # Oppdaterer spøkelser
-        for s in self.spokelser:
-            s.oppdater()
+            # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
+            if self.spiller.status == False:
+                self.spiller.sjekkKollisjonSauer(self.sauer)
+            
+            # Oppdaterer spøkelser
+            for s in self.spokelser:
+                s.oppdater()
 
-        # Oppdaterer sau, sjekker om hentet sau har kommet over til målområde
-        for a in self.sauer:
-            a.oppdater(self.spiller)
-            if a.sjekkPos() == True:
-                self.sauer.remove(a)
-                self.spiller.poeng +=1
-                self.spiller.status = False
-                self.sauer.append(Sau(800, 50))
+            # Oppdaterer sau, sjekker om hentet sau har kommet over til målområde
+            for a in self.sauer:
+                a.oppdater(self.spiller)
+                if a.sjekkPos() == True:
+                    self.sauer.remove(a)
+                    self.spiller.poeng +=1
+                    self.spiller.status = False
+                    self.sauer.append(Sau(800, 50))
     
     def tegn(self, vindu):
-
-        # Tegner bakgrunn
+# Tegner bakgrunn
         vindu.fill(WHITE)
-        pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(0, 0, GRENSE_V, VINDU_HOYDE))
-        pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(VINDU_BREDDE-GRENSE_V, 0, GRENSE_V, VINDU_HOYDE))
-        
-        # Tegner spiller, sauer, spøkelse og hindringer
-        self.spiller.tegn(vindu)
 
-        for a in self.sauer:
-            a.tegn(vindu)
-        
-        for h in self.hindringer:
-            h.tegn(vindu)
+        if self.levende:
+            pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(0, 0, GRENSE_V, VINDU_HOYDE))
+            pg.draw.rect(vindu, LIGHT_GREEN, pg.Rect(VINDU_BREDDE-GRENSE_V, 0, GRENSE_V, VINDU_HOYDE))
+            
+            # Tegner spiller, sauer, spøkelse og hindringer
+            self.spiller.tegn(vindu)
 
-        for s in self.spokelser:
-            s.tegn(vindu)
+            for a in self.sauer:
+                a.tegn(vindu)
+            
+            for h in self.hindringer:
+                h.tegn(vindu)
+
+            for s in self.spokelser:
+                s.tegn(vindu)
+        else: self.knapp.tegn(vindu)
 
     def events(self):
         for event in pg.event.get():
@@ -119,7 +131,22 @@ class Spillbrett:
                     self.spiller.venstre = False
                 if event.key == pg.K_d or event.key == pg.K_RIGHT:
                     self.spiller.hoyre = False
-                    
+            
+            elif event.type == pg.MOUSEBUTTONDOWN: #forskjell
+                x_pos, y_pos = event.pos
+                if self.knapp.rect.collidepoint( (x_pos, y_pos) ):
+                    print(f"Klikket på: {self.knapp.tekst}")
+                    self.restart()
+
+    def tegntekst(self, vindu): #FORSKJELL
+        font = pg.font.SysFont("Tahoma", FONT_SIZE)
+        if self.levende:
+            text_surface = font.render("Score: " + str(self.spiller.poeng), True, BLACK)
+            vindu.blit(text_surface, (600, 80))
+        else:
+            font = pg.font.SysFont("Tahoma", FONT_SIZE+20)
+            text_surface = font.render("Din poengscore ble: " + str(self.spiller.poeng), True, BLACK, WHITE)
+            vindu.blit(text_surface, (195, VINDU_HOYDE/2-70))     
 
 
 
@@ -176,6 +203,8 @@ class Spiller(SpillObjekt):
         self.image = pg.transform.smoothscale(self.image, (80, 120))
         
         self.rect = self.image.get_rect()
+        self.rect.centerx = x  #FORSKJELL
+        self.rect.centery = y     #FORSKJELL
         
         self.opp = False
         self.ned = False
@@ -269,3 +298,25 @@ class Sau(SpillObjekt):
         
     def tegn(self, vindu:pg.Surface):
         vindu.blit(self.image, self.rect)
+
+pg.init()
+# Angir hvilken skrifttype og tekststørrelse vi vil bruke på tekst
+font = pg.font.SysFont("Tahoma", 24)
+
+class Knapp:
+  def __init__(self, xPosisjon, yPosisjon, tekst):
+    self.xPosisjon = xPosisjon
+    self.yPosisjon = yPosisjon
+    self.bredde = len(tekst) * 20
+    self.hoyde = 60
+    self.tekst = tekst
+    self.rect = pg.Rect(
+      self.xPosisjon, self.yPosisjon, self.bredde, self.hoyde
+    )
+    self.farge =  BLACK
+
+  def tegn(self, vindu):
+    pg.draw.rect(vindu, self.farge, self.rect, 4)
+    tekst = font.render(self.tekst, True, BLACK)
+    tekstRamme = tekst.get_rect(center=self.rect.center)
+    vindu.blit(tekst, tekstRamme.topleft)
