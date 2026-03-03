@@ -14,7 +14,7 @@ class Spillbrett:
         # Må legge inn tilfeldige posisjoner som ikke overlapper 
         self.genererKordinater()
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
-        self.knapp = Knapp(VINDU_BREDDE/2 - 70, VINDU_HOYDE/2 + 100, "Restart")
+        self.knapp = Knapp(int(VINDU_BREDDE/2 - 70), int(VINDU_HOYDE/2 + 100), "Restart")
 
     def sjekkAvstand(self, x1:int, y1:int, x2:int, y2:int):
         return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
@@ -87,7 +87,7 @@ class Spillbrett:
                     self.spiller.status = False
                     self.sauer.append(Sau(800, 50))
     
-    def tegn(self, vindu):
+    def tegn(self, vindu:pg.Surface):
 # Tegner bakgrunn
         vindu.fill(WHITE)
 
@@ -138,7 +138,7 @@ class Spillbrett:
                     print(f"Klikket på: {self.knapp.tekst}")
                     self.restart()
 
-    def tegntekst(self, vindu): #FORSKJELL
+    def tegntekst(self, vindu:pg.Surface): #FORSKJELL
         font = pg.font.SysFont("Tahoma", FONT_SIZE)
         if self.levende:
             text_surface = font.render("Score: " + str(self.spiller.poeng), True, BLACK)
@@ -211,7 +211,7 @@ class Spiller(SpillObjekt):
         self.venstre = False
         self.hoyre = False
 
-    def sjekkKollisjonSauer(self, sauer):
+    def sjekkKollisjonSauer(self, sauer:list[Sau]):
         for sau in sauer:
           if self.rect.colliderect(sau.rect):
             if self.status == False:
@@ -221,7 +221,7 @@ class Spiller(SpillObjekt):
                 return True
             
     
-    def sjekkKollisjonSpokelse(self, spokelser):
+    def sjekkKollisjonSpokelse(self, spokelser:list[Spokelse]):
         for spokelse in spokelser:
           if self.rect.colliderect(spokelse.rect):
               return True
@@ -304,7 +304,7 @@ pg.init()
 font = pg.font.SysFont("Tahoma", 24)
 
 class Knapp:
-  def __init__(self, xPosisjon, yPosisjon, tekst):
+  def __init__(self, xPosisjon:int, yPosisjon:int, tekst:str):
     self.xPosisjon = xPosisjon
     self.yPosisjon = yPosisjon
     self.bredde = len(tekst) * 20
@@ -315,7 +315,7 @@ class Knapp:
     )
     self.farge =  BLACK
 
-  def tegn(self, vindu):
+  def tegn(self, vindu:pg.Surface):
     pg.draw.rect(vindu, self.farge, self.rect, 4)
     tekst = font.render(self.tekst, True, BLACK)
     tekstRamme = tekst.get_rect(center=self.rect.center)
