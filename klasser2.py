@@ -69,7 +69,7 @@ class Spiller(SpillObjekt):
         self.venstre = False
         self.hoyre = False
 
-    def sjekkKollisjonSauer(self, sauer):
+    def sjekkKollisjonSauer(self, sauer:list[Sau]):
         for sau in sauer:
           if self.rect.colliderect(sau.rect):
             if self.status == False:
@@ -79,7 +79,7 @@ class Spiller(SpillObjekt):
                 return True
             
     
-    def sjekkKollisjonSpokelse(self, spokelser):
+    def sjekkKollisjonSpokelse(self, spokelser:list[Spokelse]):
         for spokelse in spokelser:
           if self.rect.colliderect(spokelse.rect):
               return True
@@ -162,7 +162,7 @@ pg.init()
 font = pg.font.SysFont("Tahoma", 24)
 
 class Knapp:
-  def __init__(self, xPosisjon, yPosisjon, tekst):
+  def __init__(self, xPosisjon:int, yPosisjon:int, tekst:str):
     self.xPosisjon = xPosisjon
     self.yPosisjon = yPosisjon
     self.bredde = len(tekst) * 20
@@ -173,7 +173,7 @@ class Knapp:
     )
     self.farge =  BLACK
 
-  def tegn(self, vindu):
+  def tegn(self, vindu:pg.Surface):
     pg.draw.rect(vindu, self.farge, self.rect, 4)
     tekst = font.render(self.tekst, True, BLACK)
     tekstRamme = tekst.get_rect(center=self.rect.center)
