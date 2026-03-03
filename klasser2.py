@@ -45,8 +45,6 @@ class Spokelse(SpillObjekt):
 class Spiller(SpillObjekt):
     def __init__(self, x:int, y:int):
         super().__init__(x, y)
-        self.x = x
-        self.y = y
         self.fart = 6
         self.status = False
         self.poeng = 0
@@ -146,9 +144,9 @@ class Sau(SpillObjekt):
             self.image = pg.transform.smoothscale(self.image, (40, 55))
             self.rect.centery = spiller.rect.bottom
             self.rect.left = spiller.rect.right + 10
-        else:
-            self.rect.x = self.x
-            self.rect.y = self.y
+       # else:
+           # self.rect.x = self.x
+           # self.rect.y = self.y
         
     def tegn(self, vindu:pg.Surface):
         vindu.blit(self.image, self.rect)
