@@ -4,12 +4,20 @@ import pygame as pg
 from pathlib import Path
 from random import randint
 import math as math
-     
+
+# Bestemmer skrifttype og tekststørrelse for tekst
+pg.init()
+font = pg.font.SysFont("Tahoma", 24)
+
+
 class SpillObjekt:
     def __init__(self, x:int, y:int):
-        self.x = x
-        self.y = y
-
+        self.rect = pg.Rect(x, y, 10, 10)
+        self.image = None
+  
+    def tegn(self, vindu:pg.Surface):
+        if self.image:
+            vindu.blit(self.image, self.rect)
 
 
 class Spokelse(SpillObjekt):
@@ -37,8 +45,6 @@ class Spokelse(SpillObjekt):
         if self.rect.bottom > VINDU_HOYDE or self.rect.top < 0:
             self.vy *= -1
     
-    def tegn(self, vindu:pg.Surface):
-        vindu.blit(self.image, self.rect)
         
 
 
@@ -102,8 +108,7 @@ class Spiller(SpillObjekt):
             self.rect.x -= self.fart
         
 
-    def tegn(self, vindu:pg.Surface):
-        vindu.blit(self.image, self.rect)
+  
 
 
 
@@ -120,8 +125,6 @@ class Hindring(SpillObjekt):
         self.rect.x = x
         self.rect.y = y
     
-    def tegn(self, vindu:pg.Surface):
-        vindu.blit(self.image, self.rect)
 
 
 
@@ -149,16 +152,10 @@ class Sau(SpillObjekt):
             self.image = pg.transform.smoothscale(self.image, (40, 55))
             self.rect.centery = spiller.rect.bottom
             self.rect.left = spiller.rect.right + 10
-       # else:
-           # self.rect.x = self.x
-           # self.rect.y = self.y
-        
-    def tegn(self, vindu:pg.Surface):
-        vindu.blit(self.image, self.rect)
+    
 
-pg.init()
-# Angir hvilken skrifttype og tekststørrelse vi vil bruke på tekst
-font = pg.font.SysFont("Tahoma", 24)
+
+
 
 class Knapp:
   def __init__(self, xPosisjon:float, yPosisjon:float, tekst:str):
