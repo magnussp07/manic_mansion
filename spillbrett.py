@@ -19,7 +19,7 @@ class Spillbrett:
         return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
 
 
-    def _lag_pos(self, antall:int, min_x:int, max_x:int, min_y:int, max_y:int, bredde:int, hoyde:int):
+    def lag_pos(self, antall:int, min_x:int, max_x:int, min_y:int, max_y:int, bredde:int, hoyde:int):
         posisjoner:list[list[int]] = []
 
         while len(posisjoner) < antall:
@@ -38,8 +38,8 @@ class Spillbrett:
         return posisjoner
 
     def genererKordinater(self):
-        h_pos = self._lag_pos(3, GRENSE_V, GRENSE_H, 0, VINDU_HOYDE, 90, 120)
-        sau_pos = self._lag_pos(3, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
+        h_pos = self.lag_pos(3, GRENSE_V, GRENSE_H, 0, VINDU_HOYDE, 90, 120)
+        sau_pos = self.lag_pos(3, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
     
         self.spokelser = [self.nyttSpokelse()]
         self.hindringer = [Hindring(h_pos[0][0], h_pos[0][1]), Hindring(h_pos[1][0], h_pos[1][1]), Hindring(h_pos[2][0], h_pos[2][1])]
@@ -50,8 +50,8 @@ class Spillbrett:
     def nyttSpokelse(self):
         return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE))
     
-    def _tilfeldig_sau(self):
-        pos = self._lag_pos(1, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
+    def tilfeldig_sau(self):
+        pos = self.lag_pos(1, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
         return pos[0][0], pos[0][1]
     
     def restart(self): #FORSKJELL
@@ -85,7 +85,7 @@ class Spillbrett:
                     self.spiller.poeng +=1
                     self.spiller.status = False
 
-                    x, y = self._tilfeldig_sau()
+                    x, y = self.tilfeldig_sau()
                     self.nySau = Sau(x, y)
                     self.sauer.append(self.nySau)
     
