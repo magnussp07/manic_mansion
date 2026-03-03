@@ -59,6 +59,7 @@ class Spiller(SpillObjekt):
         bildesti = Path(__file__).parent / "bilder" / "spiller.png"
         self.image = pg.image.load(bildesti).convert_alpha()
         self.image = pg.transform.smoothscale(self.image, (80, 120))
+        self.maske = pg.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
         self.rect.centerx = x  #FORSKJELL
@@ -86,7 +87,10 @@ class Spiller(SpillObjekt):
           
     def sjekkKollisjonHinder(self, hindringer:list[Hindring]):
         for hinder in hindringer:
-            if self.rect.colliderect(hinder.rect):
+
+            offset_x = hinder.rect.x - self.rect.x
+            offset_y = hinder.rect.y - self.rect.y
+            if self.maske.overlap(hinder.maske, (offset_x, offset_y)):
                 return True
 
     def oppdater(self, hindringer):
@@ -124,6 +128,7 @@ class Hindring(SpillObjekt):
         bildesti = Path(__file__).parent / "bilder" / "gravstein.png"
         self.image = pg.image.load(bildesti).convert_alpha()
         self.image = pg.transform.smoothscale(self.image, (90, 90))
+        self.maske = pg.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
 
