@@ -1,7 +1,6 @@
 from __future__ import annotations
 from constants import *
 import pygame as pg
-from pathlib import Path
 from random import randint
 import math as math
 from klasser2 import *
@@ -62,7 +61,7 @@ class Spillbrett:
 
     def oppdater(self):
         if self.levende:
-            self.spiller.oppdater()
+            self.spiller.oppdater(self.hindringer)
             
             # Sjekker om spillet er ferdig
             if self.spiller.sjekkKollisjonSauer(self.sauer) or self.spiller.sjekkKollisjonSpokelse(self.spokelser):
@@ -71,9 +70,7 @@ class Spillbrett:
             # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
             if self.spiller.status == False:
                 self.spiller.sjekkKollisjonSauer(self.sauer)
-
-            if self.spiller.sjekkKollisjonHinder(self.hindringer):
-                pass
+                            
             
             # Oppdaterer spøkelser
             for s in self.spokelser:

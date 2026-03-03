@@ -83,13 +83,15 @@ class Spiller(SpillObjekt):
             if self.rect.colliderect(hinder.rect):
                 return True
 
-    def oppdater(self):
+    def oppdater(self, hindringer):
         if self.status == True:
             self.fart = 3
             if self.rect.right < GRENSE_V:
                 self.status = False
         else: 
             self.fart = 5
+
+        gammel_pos = self.rect.copy()
 
         if self.opp and self.rect.top > 0:
             self.rect.y -= self.fart
@@ -100,6 +102,9 @@ class Spiller(SpillObjekt):
             
         if self.venstre and self.rect.left >= 0:
             self.rect.x -= self.fart
+
+        if self.sjekkKollisjonHinder(hindringer):
+            self.rect = gammel_pos
         
 
     def tegn(self, vindu:pg.Surface):
