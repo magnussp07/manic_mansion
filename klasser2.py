@@ -80,6 +80,11 @@ class Spiller(SpillObjekt):
         for spokelse in spokelser:
           if self.rect.colliderect(spokelse.rect):
               return True
+          
+    def sjekkKollisjonHinder(self, hindringer:list[Hindring]):
+        for hinder in hindringer:
+            if self.rect.colliderect(hinder.rect):
+                return True
 
     def oppdater(self):
         if self.status == True:

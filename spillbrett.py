@@ -73,6 +73,9 @@ class Spillbrett:
             # Sjekker kollisjon med sauer, hvis bonde ikke har hentet sau enda
             if self.spiller.status == False:
                 self.spiller.sjekkKollisjonSauer(self.sauer)
+
+            if self.spiller.sjekkKollisjonHinder(self.hindringer):
+                pass
             
             # Oppdaterer spøkelser
             for s in self.spokelser:
