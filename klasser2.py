@@ -5,11 +5,6 @@ from pathlib import Path
 from random import randint
 import math as math
      
-
-
-
-
-
 class SpillObjekt:
     def __init__(self, x:int, y:int):
         self.x = x
@@ -163,7 +158,7 @@ pg.init()
 font = pg.font.SysFont("Tahoma", 24)
 
 class Knapp:
-  def __init__(self, xPosisjon:int, yPosisjon:int, tekst:str):
+  def __init__(self, xPosisjon:float, yPosisjon:float, tekst:str):
     self.xPosisjon = xPosisjon
     self.yPosisjon = yPosisjon
     self.bredde = len(tekst) * 20

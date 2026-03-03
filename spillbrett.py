@@ -87,7 +87,7 @@ class Spillbrett:
                     self.spiller.status = False
                     self.sauer.append(Sau(800, 50))
     
-    def tegn(self, vindu):
+    def tegn(self, vindu:pg.Surface):
 # Tegner bakgrunn
         vindu.fill(WHITE)
 
@@ -138,7 +138,7 @@ class Spillbrett:
                     print(f"Klikket på: {self.knapp.tekst}")
                     self.restart()
 
-    def tegntekst(self, vindu): #FORSKJELL
+    def tegntekst(self, vindu:pg.Surface): #FORSKJELL
         font = pg.font.SysFont("Tahoma", FONT_SIZE)
         if self.levende:
             text_surface = font.render("Score: " + str(self.spiller.poeng), True, BLACK)
