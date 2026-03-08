@@ -14,44 +14,47 @@ class Spillbrett:
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
         self.knapp = Knapp(VINDU_BREDDE/2 - 70, VINDU_HOYDE/2 + 100, "Restart")
 
-    def sjekkAvstand(self, x1:int, y1:int, x2:int, y2:int):
-        return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
-
-
-    def lagPos(self, antall:int, min_x:int, max_x:int, min_y:int, max_y:int, bredde:int, hoyde:int):
-        posisjoner:list[list[int]] = []
-
-        while len(posisjoner) < antall:
-            nyx = randint(min_x, max_x - bredde)
-            nyy = randint(min_y, max_y - hoyde)
-
-            ok = True
-            for (x, y) in posisjoner:
-                if self.sjekkAvstand(x, y, nyx, nyy) < 120:
-                    ok = False
-                    break
-
-            if ok:
-                posisjoner.append([nyx, nyy])
-
-        return posisjoner
-
     def genererKordinater(self):
-        hPos = self.lagPos(3, GRENSE_V, GRENSE_H, 0, VINDU_HOYDE, 90, 120)
-        sauPos = self.lagPos(3, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
-    
+        
         self.spokelser = [self.nyttSpokelse()]
-        self.hindringer = [Hindring(hPos[0][0], hPos[0][1]), Hindring(hPos[1][0], hPos[1][1]), Hindring(hPos[2][0], hPos[2][1])]
-        self.sauer = [Sau(sauPos[0][0], sauPos[0][1]), Sau(sauPos[1][0], sauPos[1][1]), Sau(sauPos[2][0], sauPos[2][1])]
+        self.hindringer = [self.nyHindring()]
+        self.sauer = [self.nySau()]
+
+        for _ in range(2):
+            self.hindringer.append(self.leggTilNyttObjekt(self.hindringer, Hindring))
+            self.sauer.append(self.leggTilNyttObjekt(self.sauer, Sau))
 
         return self.sauer, self.hindringer, self.spokelser
-   
-    def nyttSpokelse(self):
-        return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE))
     
-    def tilfeldig_sau(self):
-        pos = self.lagPos(1, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
-        return pos[0][0], pos[0][1]
+    def nyttSpokelse(self):
+        return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE-120))
+    
+    def nyHindring(self):
+        return Hindring(randint(GRENSE_V, GRENSE_H-60), randint(0, VINDU_HOYDE-60))
+    
+    def nySau(self):
+        return Sau(randint(GRENSE_H, VINDU_BREDDE-80), randint(0, VINDU_HOYDE-100))
+    
+    #lager nytt objekt som ikke kolliderer med noen av de tidligere objektene i lista
+    def leggTilNyttObjekt(self, gamle:list[SpillObjekt], type: type[SpillObjekt]):
+        while True:
+            if type == Sau:
+                ny = type(randint(GRENSE_H, VINDU_BREDDE-80), randint(0, VINDU_HOYDE-100))
+            elif type == Hindring:
+                ny = self.nyHindring()
+            elif type == Spokelse:
+                ny = self.nyttSpokelse()
+
+
+            kollisjon = False
+
+            for obj in gamle:
+                if ny.rect.colliderect(obj.rect):
+                    kollisjon = True
+                    break
+
+            if kollisjon == False:
+                return ny
     
     def restart(self): 
         self.levende = True
@@ -80,12 +83,18 @@ class Spillbrett:
                 a.oppdater(self.spiller)
                 if a.sjekkPos() == True:
                     self.sauer.remove(a)
+                    
                     self.spiller.poeng +=1
                     self.spiller.status = False
 
-                    x, y = self.tilfeldig_sau()
-                    self.nySau = Sau(x, y)
-                    self.sauer.append(self.nySau)
+                    #x, y = self.tilfeldig_sau()
+                    #self.nySau = Sau(x, y)
+                    #self.sauer.append(self.nySau)
+
+                    self.spokelser.append(self.leggTilNyttObjekt(self.spokelser, Spokelse))
+                    self.hindringer.append(self.leggTilNyttObjekt(self.hindringer, Hindring))
+                    self.sauer.append(self.leggTilNyttObjekt(self.sauer, Sau))
+
     
     def tegn(self, vindu:pg.Surface):
         vindu.fill(WHITE)

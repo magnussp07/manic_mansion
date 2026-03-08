@@ -23,8 +23,8 @@ class SpillObjekt:
 class Spokelse(SpillObjekt):
     def __init__(self, x:int, y: int) -> None:
         super().__init__(x, y)
-        self.vx = randint(1,4)      
-        self.vy = randint(1,4) 
+        self.vx = randint(1,2)      
+        self.vy = randint(1,2) 
 
         bildesti = Path(__file__).parent / "bilder" / "spokelse.png"
         self.image = pg.image.load(bildesti).convert_alpha()
@@ -127,7 +127,7 @@ class Hindring(SpillObjekt):
 
         bildesti = Path(__file__).parent / "bilder" / "gravstein.png"
         self.image = pg.image.load(bildesti).convert_alpha()
-        self.image = pg.transform.smoothscale(self.image, (90, 90))
+        self.image = pg.transform.smoothscale(self.image, (60, 60))
         self.maske = pg.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
