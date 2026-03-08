@@ -62,8 +62,8 @@ class Spiller(SpillObjekt):
         self.maske = pg.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
-        self.rect.centerx = x  #FORSKJELL
-        self.rect.centery = y     #FORSKJELL
+        self.rect.centerx = x  
+        self.rect.centery = y     
         
         self.opp = False
         self.ned = False
@@ -93,7 +93,7 @@ class Spiller(SpillObjekt):
             if self.maske.overlap(hinder.maske, (offset_x, offset_y)):
                 return True
 
-    def oppdater(self, hindringer):
+    def oppdater(self, hindringer:list[Hindring]):
         if self.status == True:
             self.fart = 3
             if self.rect.right < GRENSE_V:

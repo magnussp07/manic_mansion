@@ -10,7 +10,6 @@ class Spillbrett:
         self.running = True
         self.levende = True
         
-        # Må legge inn tilfeldige posisjoner som ikke overlapper 
         self.genererKordinater()
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
         self.knapp = Knapp(VINDU_BREDDE/2 - 70, VINDU_HOYDE/2 + 100, "Restart")
@@ -19,7 +18,7 @@ class Spillbrett:
         return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
 
 
-    def lag_pos(self, antall:int, min_x:int, max_x:int, min_y:int, max_y:int, bredde:int, hoyde:int):
+    def lagPos(self, antall:int, min_x:int, max_x:int, min_y:int, max_y:int, bredde:int, hoyde:int):
         posisjoner:list[list[int]] = []
 
         while len(posisjoner) < antall:
@@ -38,12 +37,12 @@ class Spillbrett:
         return posisjoner
 
     def genererKordinater(self):
-        h_pos = self.lag_pos(3, GRENSE_V, GRENSE_H, 0, VINDU_HOYDE, 90, 120)
-        sau_pos = self.lag_pos(3, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
+        hPos = self.lagPos(3, GRENSE_V, GRENSE_H, 0, VINDU_HOYDE, 90, 120)
+        sauPos = self.lagPos(3, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
     
         self.spokelser = [self.nyttSpokelse()]
-        self.hindringer = [Hindring(h_pos[0][0], h_pos[0][1]), Hindring(h_pos[1][0], h_pos[1][1]), Hindring(h_pos[2][0], h_pos[2][1])]
-        self.sauer = [Sau(sau_pos[0][0], sau_pos[0][1]), Sau(sau_pos[1][0], sau_pos[1][1]), Sau(sau_pos[2][0], sau_pos[2][1])]
+        self.hindringer = [Hindring(hPos[0][0], hPos[0][1]), Hindring(hPos[1][0], hPos[1][1]), Hindring(hPos[2][0], hPos[2][1])]
+        self.sauer = [Sau(sauPos[0][0], sauPos[0][1]), Sau(sauPos[1][0], sauPos[1][1]), Sau(sauPos[2][0], sauPos[2][1])]
 
         return self.sauer, self.hindringer, self.spokelser
    
@@ -51,11 +50,10 @@ class Spillbrett:
         return Spokelse(randint(GRENSE_V, GRENSE_H-80), randint(0, VINDU_HOYDE))
     
     def tilfeldig_sau(self):
-        pos = self.lag_pos(1, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
+        pos = self.lagPos(1, GRENSE_H, VINDU_BREDDE, 0, VINDU_HOYDE, 80, 100)
         return pos[0][0], pos[0][1]
     
-    def restart(self): #FORSKJELL
-        """Restarter spillet"""
+    def restart(self): 
         self.levende = True
         self.genererKordinater()
         self.spiller = Spiller(50, int(VINDU_HOYDE/2))
@@ -90,7 +88,6 @@ class Spillbrett:
                     self.sauer.append(self.nySau)
     
     def tegn(self, vindu:pg.Surface):
-# Tegner bakgrunn
         vindu.fill(WHITE)
 
         if self.levende:
@@ -140,7 +137,7 @@ class Spillbrett:
                     print(f"Klikket på: {self.knapp.tekst}")
                     self.restart()
 
-    def tegntekst(self, vindu:pg.Surface): #FORSKJELL
+    def tegntekst(self, vindu:pg.Surface): 
         font = pg.font.SysFont("Tahoma", FONT_SIZE)
         if self.levende:
             text_surface = font.render("Score: " + str(self.spiller.poeng), True, BLACK)
